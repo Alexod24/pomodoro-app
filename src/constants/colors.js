@@ -7,4 +7,5 @@ export const colors = {
   buttonText: '#FFFFFF',
   buttonSecondary: '#E5E5EA', // Botón gris claro (para "Skip" o "Rest")
   white: '#FFFFFF',
+  iconSecondary: '#A0A0A0', // Gris claro para el botón "Farm" de abajo
 };

@@ -15,7 +15,7 @@ export default function TimerDisplay({ minutes, seconds }) {
 const styles = StyleSheet.create({
   timerText: {
     fontSize: 90,
-    fontFamily: 'Quicksand_700Bold',
+    fontFamily: 'Mansalva_400Regular',
     color: colors.text,
     marginBottom: 40,
   },

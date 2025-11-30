@@ -8,7 +8,7 @@ export default function ControlButtons({ isActive, toggleTimer, resetTimer, minu
       <View style={styles.buttonContainer}>
         {isActive ? (
           <TouchableOpacity onPress={toggleTimer} style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Pausar / Rendirse</Text>
+            <Text style={styles.secondaryButtonText}>Pausar</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={toggleTimer} style={styles.primaryButton}>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: colors.buttonText,
     fontSize: 18,
-    fontFamily: 'Quicksand_700Bold',
+    fontFamily: 'Mansalva_400Regular',
   },
   secondaryButton: {
     backgroundColor: colors.buttonSecondary,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.text,
     fontSize: 18,
-    fontFamily: 'Quicksand_700Bold',
+    fontFamily: 'Mansalva_400Regular',
   },
   resetLink: {
     marginTop: 20,

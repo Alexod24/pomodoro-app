@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Vibration, Keyboard } from 'react-native';
 
 export default function usePomodoroTimer() {
+  const [focusDuration, setFocusDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
+  
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
@@ -33,7 +36,7 @@ export default function usePomodoroTimer() {
 
   const switchMode = () => {
     const nextMode = mode === 'FOCUS' ? 'BREAK' : 'FOCUS';
-    const nextTime = nextMode === 'FOCUS' ? 25 : 5;
+    const nextTime = nextMode === 'FOCUS' ? focusDuration : breakDuration;
     setMode(nextMode);
     setMinutes(nextTime);
     setSeconds(0);
@@ -47,8 +50,24 @@ export default function usePomodoroTimer() {
 
   const resetTimer = () => {
     setIsActive(false);
-    setMinutes(mode === 'FOCUS' ? 25 : 5);
+    setMinutes(mode === 'FOCUS' ? focusDuration : breakDuration);
     setSeconds(0);
+  };
+
+  const updateDurations = (newFocus, newBreak) => {
+    setFocusDuration(newFocus);
+    setBreakDuration(newBreak);
+    
+    // Si no está activo, actualizamos el tiempo actual inmediatamente para reflejar el cambio
+    if (!isActive) {
+      if (mode === 'FOCUS') {
+        setMinutes(newFocus);
+        setSeconds(0);
+      } else {
+        setMinutes(newBreak);
+        setSeconds(0);
+      }
+    }
   };
 
   return {
@@ -60,6 +79,9 @@ export default function usePomodoroTimer() {
     setTask,
     toggleTimer,
     resetTimer,
-    switchMode
+    switchMode,
+    focusDuration,
+    breakDuration,
+    updateDurations
   };
 }

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   StyleSheet, 
   View, 
   SafeAreaView,
-  ActivityIndicator 
+  ActivityIndicator,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useKeepAwake } from 'expo-keep-awake';
 import { colors } from '../constants/colors';
 
-// Hooks
 import usePomodoroTimer from '../hooks/usePomodoroTimer';
 
 // Components
@@ -18,6 +19,7 @@ import StatusIndicator from '../components/StatusIndicator';
 import TaskInput from '../components/TaskInput';
 import TimerDisplay from '../components/TimerDisplay';
 import ControlButtons from '../components/ControlButtons';
+import SettingsModal from '../components/SettingsModal';
 
 // Fonts
 import { 
@@ -26,15 +28,18 @@ import {
   Quicksand_500Medium, 
   Quicksand_700Bold 
 } from '@expo-google-fonts/quicksand';
+import { Mansalva_400Regular } from '@expo-google-fonts/mansalva';
 
-export default function PomodoroScreen() {
+export default function PomodoroScreen({ navigation }) {
   useKeepAwake();
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Cargar fuentes
   let [fontsLoaded] = useFonts({
     Quicksand_400Regular,
     Quicksand_500Medium,
     Quicksand_700Bold,
+    Mansalva_400Regular,
   });
 
   // Usar el hook personalizado
@@ -47,7 +52,10 @@ export default function PomodoroScreen() {
     setTask,
     toggleTimer,
     resetTimer,
-    switchMode
+    switchMode,
+    focusDuration,
+    breakDuration,
+    updateDurations
   } = usePomodoroTimer();
 
   if (!fontsLoaded) {
@@ -58,7 +66,10 @@ export default function PomodoroScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       
-      <Header />
+      <Header 
+        onSettingsPress={() => setModalVisible(true)} 
+        onBackPress={() => navigation.goBack()}
+      />
 
       <View style={styles.contentContainer}>
         
@@ -78,6 +89,14 @@ export default function PomodoroScreen() {
             resetTimer={resetTimer} 
             minutes={minutes}
         />
+
+        <SettingsModal 
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          focusDuration={focusDuration}
+          breakDuration={breakDuration}
+          onSave={updateDurations}
+        />
         
       </View>
     </SafeAreaView>
@@ -88,6 +107,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingTop:30,
   },
   contentContainer: {
     flex: 1,
