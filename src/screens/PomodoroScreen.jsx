@@ -5,7 +5,8 @@ import {
   SafeAreaView,
   ActivityIndicator,
   TouchableOpacity,
-  Text
+  Text,
+  Image
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -20,6 +21,8 @@ import TaskInput from '../components/TaskInput';
 import TimerDisplay from '../components/TimerDisplay';
 import ControlButtons from '../components/ControlButtons';
 import SettingsModal from '../components/SettingsModal';
+import Dock from '../components/Dock';
+import MiniPlayer from '../components/MiniPlayer';
 
 // Fonts
 import { 
@@ -66,14 +69,19 @@ export default function PomodoroScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       
-      <Header 
-        onSettingsPress={() => setModalVisible(true)} 
-        onBackPress={() => navigation.goBack()}
-      />
+      <Header />
+      <MiniPlayer />
 
       <View style={styles.contentContainer}>
         
-        <StatusIndicator mode={mode} isActive={isActive} />
+        {/* Ilustración del Gato */}
+        <View style={styles.illustrationContainer}>
+          <Image 
+            source={require('../../assets/cat.gif')}
+            style={{ width: 250, height: 250}}
+            resizeMode="contain"
+          />
+        </View>
 
         <TaskInput 
             task={task} 
@@ -99,6 +107,15 @@ export default function PomodoroScreen({ navigation }) {
         />
         
       </View>
+
+      <Dock 
+        isHome={false}
+        onSettingsPress={() => setModalVisible(true)}
+        onBackPress={() => navigation.goBack()}
+        onTasksPress={() => navigation.navigate('Tasks')}
+        onMusicPress={() => navigation.navigate('Music')}
+        onSantuarioPress={() => navigation.navigate('Santuario')}
+      />
     </SafeAreaView>
   );
 }
@@ -107,7 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop:30,
+    paddingTop: 30,
   },
   contentContainer: {
     flex: 1,
@@ -115,5 +132,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingBottom: 50,
+  },
+  illustrationContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20, 
   },
 });

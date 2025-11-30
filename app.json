@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "pomodoro",
-    "slug": "pomodoro",
+    "name": "CatFocus",
+    "slug": "CatFocus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

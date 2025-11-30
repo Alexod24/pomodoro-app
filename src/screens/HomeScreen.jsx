@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ActivityIndicator, Platform, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
 import { colors } from '../constants/colors';
+
+import Header from '../components/Header';
+import SettingsModal from '../components/SettingsModal';
+import Dock from '../components/Dock';
+import usePomodoroTimer from '../hooks/usePomodoroTimer';
 
 // Importamos las fuentes
 import { useFonts, Quicksand_700Bold, Quicksand_600SemiBold } from '@expo-google-fonts/quicksand';
@@ -10,6 +15,14 @@ import { Mansalva_400Regular } from '@expo-google-fonts/mansalva';
 
 // RECIBIMOS LA PROPIEDAD { navigation } AQUÍ
 export default function HomeScreen({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  
+  // Usamos el hook para manejar la configuración (nota: el estado es local por ahora)
+  const {
+    focusDuration,
+    breakDuration,
+    updateDurations
+  } = usePomodoroTimer();
   
   let [fontsLoaded] = useFonts({
     Quicksand_700Bold,
@@ -26,12 +39,15 @@ export default function HomeScreen({ navigation }) {
       <StatusBar style="dark" />
       
       {/* 1. HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.logoText}>CatFocus</Text>
-        <TouchableOpacity style={styles.settingsButton}>
-             <Feather name="hexagon" size={28} color={colors.text} />
-        </TouchableOpacity>
-      </View>
+      <Header />
+      
+      <SettingsModal 
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        focusDuration={focusDuration}
+        breakDuration={breakDuration}
+        onSave={updateDurations}
+      />
 
       {/* 2. CONTENIDO CENTRAL */}
       <View style={styles.contentContainer}>
@@ -43,8 +59,6 @@ export default function HomeScreen({ navigation }) {
             style={{ width: 250, height: 250}}
             resizeMode="contain"
           />
-          {/* Sombra decorativa */}
-          {/* <View style={styles.shadow} /> */}
         </View>
 
         {/* BOTÓN START CON NAVEGACIÓN */}
@@ -58,18 +72,12 @@ export default function HomeScreen({ navigation }) {
 
       </View>
 
-      {/* 3. FOOTER (Santuario) */}
-      <View style={styles.footer}>
-          <TouchableOpacity style={styles.sanctuaryButton}>
-            <Ionicons name="leaf-outline" size={20} color={colors.secondaryText || '#A0A0A0'} style={{marginRight: 5}} />
-            <Text style={styles.sanctuaryText}>Santuario</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.taskButton}>
-            <Ionicons name="clipboard-outline" size={20} color={colors.secondaryText || '#A0A0A0'} style={{marginRight: 5}} />
-            <Text style={styles.taskText}>Tareas</Text>
-          </TouchableOpacity>
-      </View>
+      <Dock 
+        isHome={true}
+        onSettingsPress={() => setModalVisible(true)}
+        onTasksPress={() => navigation.navigate('Tasks')}
+        onMusicPress={() => navigation.navigate('Music')}
+      />
 
     </SafeAreaView>
   );
@@ -80,21 +88,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: Platform.OS === 'android' ? 40 : 0, 
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-    paddingVertical: 10,
-  },
-  logoText: {
-    fontSize: 24,
-    fontFamily: 'Quicksand_700Bold',
-    color: colors.text,
-  },
-  settingsButton: {
-    padding: 5,
   },
   contentContainer: {
     flex: 1, 
@@ -134,7 +127,7 @@ const styles = StyleSheet.create({
   },
   footer: {
       paddingHorizontal: 25,
-      paddingBottom: 30,
+      paddingBottom: 100, // Increased padding to make space for Dock
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '100%',
